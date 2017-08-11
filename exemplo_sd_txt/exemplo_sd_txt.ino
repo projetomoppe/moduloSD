@@ -1,3 +1,4 @@
+#include <SPI.h>
 #include <NewPing.h>
 #include <SdFat.h>
 

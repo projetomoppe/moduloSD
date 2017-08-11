@@ -61,4 +61,5 @@ void loop()
     while (1) {
     }
   }
+  delay(500);
 }

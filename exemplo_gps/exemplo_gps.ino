@@ -1,6 +1,16 @@
 #include <SPI.h>
 #include <SD.h>
 #include <TinyGPS.h>
+#include <SdFat.h>
+
+SdFat sdCard;
+SdFile meuArquivo;
+
+const int chipSelect = 6;
+const int potPin = A5;
+const int botaoPin = 7;
+int valorPot = 0;
+int valorBot = 0;
 
 #define ARDUINO_USD_CS 8
 #define LOG_FILE_PREFIX "gpslog"
@@ -22,6 +32,9 @@ void setup()
   SerialMonitor.begin(9600);
   gpsPort.begin(GPS_BAUD);
   
+  pinMode(A5, INPUT);
+  pinMode(7, INPUT);  
+  
   SerialMonitor.println( "Configurando o cartao SD");
   
   if(!SD.begin(ARDUINO_USD_CS))
@@ -31,6 +44,16 @@ void setup()
   updateFileName(); //sempre que se reiniciar, e criado  um novo arquivo,  e incrementado o número
   printHeader(); // Imprime um cabeçalho na parte superior do novo arquivo
 }
+
+ // Inicializa o modulo SD
+  if(!sdCard.begin(chipSelect,SPI_HALF_SPEED))sdCard.initErrorHalt();
+  // Abre o arquivo
+  if (!meuArquivo.open("dados.txt", O_RDWR | O_CREAT | O_AT_END))
+  {
+    sdCard.errorHalt("Erro na abertura do arquivo!");
+  }
+}
+
 
 void loop()
 {
@@ -55,15 +78,15 @@ void loop()
     }
   }
   
-  while (gpsPort.available()) // 
-     tinyGPS.encode(gpsPort.read());
+  while (gpsPort.available()) //Se não estiver logando, continue a alimentar o objeto tinyGPS
+  tinyGPS.encode(gpsPort.read());
 }
 
 byte logGPSData()
 {
-  File logFile = SD.open (logFileName, FILE_WRITE);
+  File logFile = SD.open (logFileName, FILE_WRITE); //Abrir o arquivo de log
   
-  if (logFile)
+  if (logFile) //sera impresso a longitude, latitude, altitude, velocidade, curso,data, hora.
   {
     logFile.print(tinyGPS.location.lng(), 6);
     logFile.print(',');
@@ -82,9 +105,9 @@ byte logGPSData()
     logFile.print(tinyGPS.satellites.value());
     logFile.println();
     logFile.close();
-    return 1;
+    return 1; 
   }
-    return 0;
+    return 0; //se o arquivo não for aberto, apresentará uma falha
 }
 
 void printHeader()

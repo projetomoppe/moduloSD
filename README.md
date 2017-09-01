@@ -7,7 +7,7 @@ O Módulo SD será usado com intuito de armazenamento de dados
 ## Execultando os testes
 Faremos os testes ultizando uma placa arduino juntamente com sensores de nivel icos e com o sensor ultrasônico 
 
-##Notas adicionais sobre como implantar isso em um sistema ao vivo
+## Notas adicionais sobre como implantar isso em um sistema ao vivo
 
 '''
 
@@ -24,6 +24,6 @@ Faremos os testes ultizando uma placa arduino juntamente com sensores de nivel i
 '''
 
 
-##Construindo Com:
+## Construindo Com:
 
 *https://github.com/projetomoppe/moduloSD/blob/master/exemplo_gps/exemplo_gps.ino
